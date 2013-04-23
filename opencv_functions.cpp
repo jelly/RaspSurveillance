@@ -110,18 +110,10 @@ void check_motion(Mat& a, Mat& b) {
             intruders.push_back(contours[i]);
     }
 
-    // Use the filtered blobs above to create a mask image to 
-    // extract the foreground object
-    Mat mask = Mat::zeros(b.size(), CV_8UC3);
-    drawContours(mask, intruders, -1, CV_RGB(255,255,255), -1);
-
     // Highlight the foreground object by darken the rest of the image
     // Intruder detected
     if (intruders.size()) {
 	printf("intruder detected!\n");
-        b = (b/4 & ~mask) + (b & mask);
-        drawContours(b, intruders, -1, CV_RGB(255,255,255), 2);
-	// Write the detected intruder in Mat b somewhere
 	string fileloc = image_location + "intruder_" + get_date() + ".jpg";
 	insert_db(fileloc.c_str());
 	imwrite(fileloc.c_str(),b);	
