@@ -26,7 +26,7 @@ string get_date(void) {
 }
 int init_db() {
 	// // Execute the query for creating the table
-	if(sqlite3_exec(db,"CREATE TABLE IF NOT EXISTS intruders (id INTEGER PRIMARY KEY AUTOINCREMENT,file TEXT,detected BOOLEAN DEFAULT FALSE,t TIMESTAMP DEFAULT CURRENT_TIMESTAMP)",0,0,0) != SQLITE_OK){
+	if(sqlite3_exec(db,"CREATE TABLE IF NOT EXISTS intruders (id INTEGER PRIMARY KEY AUTOINCREMENT,file TEXT,detected BOOLEAN DEFAULT FALSE,PROCESSED BOOLEAN DEFAULT FALSE,t TIMESTAMP DEFAULT CURRENT_TIMESTAMP)",0,0,0) != SQLITE_OK){
 		printf("failed to create table\n");
 		return 1;
 	}
