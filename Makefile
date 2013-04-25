@@ -5,13 +5,18 @@ ifeq ($(shell uname -m),armv6l)
 else
  $(info native build)
  CC=clang++
- CFLAGS=-O2  -pedantic -Werror
+ CFLAGS=-O0 -g  -pedantic -Werror
 endif
 
-all: watcher 
+all: watcher monitor
 
 watcher: opencv_functions.cpp main.cpp 
 	$(CC) $(CFLAGS) main.cpp `pkg-config opencv --cflags --libs sqlite3 --cflags --libs` -o $@
+
+monitor: monitor.cpp opencv_functions.cpp
+	$(CC) $(CFLAGS) monitor.cpp `pkg-config opencv --cflags --libs sqlite3 --cflags --libs` -o $@
+
+
 
 clean:
 	rm -r  watcher db
