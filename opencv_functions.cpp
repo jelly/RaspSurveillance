@@ -11,6 +11,13 @@ using namespace cv;
 using namespace std;
 
 static string image_location = "tmp/";
+
+// face detection
+static CvMemStorage* storage = 0;
+static CvMemStorage* storage_haar = 0;
+static CvHaarClassifierCascade* cascade = 0;
+time_t seconds;
+
 sqlite3 *db;
 
 string get_date(void) {
@@ -32,6 +39,10 @@ int init_db() {
 	}
 	return 0;
 
+}
+
+void close_db() {
+	sqlite3_close(db);
 }
 
 bool open_db(const char *filename) {
@@ -119,3 +130,66 @@ void check_motion(Mat& a, Mat& b) {
 	imwrite(fileloc.c_str(),b);	
     }
 }
+
+void init_detection(const char* cascade_name) {
+	cascade = (CvHaarClassifierCascade*)cvLoad( cascade_name, 0, 0, 0 );
+	if(!cascade)
+		printf("haar filter not found!");
+
+	storage = cvCreateMemStorage(0);
+	storage_haar = cvCreateMemStorage(0);
+}
+
+bool detect_and_save(const char* file, CvSize facesize) {
+    double scale = 1.2;
+    bool detected = false;
+
+    IplImage* img = cvLoadImage(file);
+    if(!img) 
+	    return false;
+
+    // Create a new image based on the input image
+    IplImage* temp = cvCreateImage( cvSize(img->width/scale,img->height/scale), 8, 3 );
+
+    // Create two points to represent the face locations
+    CvPoint pt1, pt2;
+    int i;
+
+    // Clear the memory storage which was used before
+    cvClearMemStorage( storage );
+    // Find whether the cascade is loaded, to find the faces. If yes, then:
+    if(cascade) {
+		// There can be more than one face in an image. So create a growable sequence of faces.
+		// Detect the objects and store them in the sequence
+		CvSeq* faces = cvHaarDetectObjects( img, cascade, storage,
+						    1.2, 4,
+						    CV_HAAR_DO_CANNY_PRUNING
+						    ,
+						    facesize);
+
+		// Loop the number of faces found.
+		for( i = 0; i < (faces ? faces->total : 0); i++ ) {
+		   // Create a new rectangle for drawing the face
+		    CvRect* r = (CvRect*)cvGetSeqElem( faces, i );
+
+		    // Find the dimensions of the face,and scale it if necessary
+		    pt1.x = r->x*scale;
+		    pt2.x = (r->x+r->width)*scale;
+		    pt1.y = r->y*scale;
+		    pt2.y = (r->y+r->height)*scale;
+
+		    // Draw the rectangle in the input image
+		    cvRectangle( img, pt1, pt2, CV_RGB(255,0,0), 3, 8, 0 );
+		    string fileloc = "faces/intruder_" + get_date() + ".jpg";
+		    if(faces->total > 0)
+		    	cvSaveImage(fileloc.c_str(), img );
+		    	detected = true;
+		}
+    }
+
+
+    // Release the temp image created.
+    cvReleaseImage( &temp );
+    return detected;
+}
+
