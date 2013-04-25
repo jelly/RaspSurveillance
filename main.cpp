@@ -35,6 +35,7 @@ int main(int argc, char const* argv[])
 
 		if(cur.data && prev.data){
 			check_motion(prev,cur);
+			sleep(1);
 		}
 
 		cur.copyTo(prev);
