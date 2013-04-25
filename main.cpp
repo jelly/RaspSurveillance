@@ -29,6 +29,7 @@ int main(int argc, char const* argv[])
 	VideoCapture cap(0); // open the default camera
 	if(!cap.isOpened())  // check if we succeeded
 		return -1;
+
 	while (1) {
 		cap >> cur;
 
@@ -38,6 +39,8 @@ int main(int argc, char const* argv[])
 
 		cur.copyTo(prev);
 	}
+
+	close_db();
 	return 0;
 
 }
