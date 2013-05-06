@@ -8,10 +8,10 @@ else
  CFLAGS=-O0 -g  -pedantic -Werror
 endif
 
-all: watcher test
+all: watcher
 
 watcher: main.cpp 
-	$(CC) $(CFLAGS) main.cpp `pkg-config opencv --cflags --libs sqlite3 --cflags --libs` -o $@
+	$(CC) $(CFLAGS) main.cpp `pkg-config opencv --cflags --libs sqlite3 --cflags --libs --cflags --libs glib-2.0` -o $@
 
 
 
