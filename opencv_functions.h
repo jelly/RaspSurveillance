@@ -7,13 +7,20 @@
 #include <string.h>
 #include <sqlite3.h>
 #include <string>
+#include <glib.h>
 
 #define MAX_DATE 20 
 
 using namespace std;
 using namespace cv;
 
+typedef struct
+{
+  gchar *database, *image_location;
+} Settings;
+
 string get_date();
+
 
 void close_db();
 

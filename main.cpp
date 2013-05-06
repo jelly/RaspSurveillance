@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <ctime>
 #include "opencv_functions.cpp"
+#include <glib.h>
 
 using namespace std;
 using namespace cv;
@@ -12,29 +13,49 @@ using namespace cv;
 
 int main(int argc, char const *argv[])
 {
-	
+	Settings *conf;
+	GKeyFile *keyfile;
+	GKeyFileFlags flags;
+	GError *error = NULL;
+	gsize length;
+	  
+	/* Create a new GKeyFile object and a bitwise list of flags. */
+	keyfile = g_key_file_new();	
+	if(!g_key_file_load_from_file(keyfile,"rpisecsys.conf",flags,&error)) {
+		printf("Failed to load config file\n");
+		//g_error(error->message);
+		return -1;
+	}
+
+	conf = g_slice_new(Settings);
+	conf->database = g_key_file_get_string(keyfile,"config","database",NULL);
+	conf->image_location = g_key_file_get_string(keyfile,"config","image_location",NULL);
+
 	clock_t t;
 	Mat prev,cur;
-	const char *db_name = "database.db";
-	open_db(db_name);
+//	const char *db_name = "database.db";
+	open_db(conf->database);
 	init_db();
 
-	VideoCapture cap(0); // open the default camera
-	if(!cap.isOpened())  // check if we succeeded
+	VideoCapture cap(0); 
+	if(!cap.isOpened())  
 		return -1;
 	Mat original;
 	cap >> original;
 	cur = original;
     	cvtColor(cur,cur,CV_RGB2GRAY);
 	init_facedetection();
+	string fileloc;
 
 	while(1) {
 		if(cur.data && prev.data){
 			t = clock();
-			// If motion 
+			// Check if motion exists
 			if(motion(cur,prev)) {
+
 				printf("intruder detected!\n");
-				string fileloc = image_location + "intruder_" + get_date() + ".jpg";
+
+				// Try to detect a face
 				if(detect_face(cur))
 					insert_db(fileloc.c_str(),true);
 				else
@@ -51,7 +72,5 @@ int main(int argc, char const *argv[])
 		cap >> cur;
     		cvtColor(cur,cur,CV_RGB2GRAY);
 	}
-
 	return 0;
 }
-

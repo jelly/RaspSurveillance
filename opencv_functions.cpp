@@ -1,11 +1,8 @@
 #include "opencv_functions.h"
 
-static string image_location = "tmp/";
-
 // face detection
 CascadeClassifier face_cascade;
 string face_cascade_name = "lbpcascade_frontalface_default.xml";
-
 
 time_t seconds;
 
@@ -18,10 +15,11 @@ string get_date() {
 	the_date[0] = '\0';
 	now = time(NULL);
 	if( now != -1)
-		strftime(the_date,MAX_DATE,"%y_%m_%d_%H-%M-%S", localtime(&now));
+		strftime(the_date,MAX_DATE,"%Y_%m_%d_%H-%M-%S", localtime(&now));
 
 	return string(the_date);
 }
+
 int init_db() {
 	// // Execute the query for creating the table
 	if(sqlite3_exec(db,"CREATE TABLE IF NOT EXISTS intruders (id INTEGER PRIMARY KEY AUTOINCREMENT,file TEXT,detected BOOLEAN DEFAULT FALSE,PROCESSED BOOLEAN DEFAULT FALSE,t TIMESTAMP DEFAULT CURRENT_TIMESTAMP)",0,0,0) != SQLITE_OK){
