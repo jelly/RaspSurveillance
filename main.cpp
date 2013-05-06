@@ -62,7 +62,8 @@ int main(int argc, char const *argv[])
 			if(motion(cur,prev)) {
 				printf("motion detected!\n");
 				fileloc = (string)conf->image_directory + "intruder_" + get_date() + ".jpg"; 
-				notifymyandroid(conf->nma_key,get_date().c_str());
+				if(conf->nma_key != NULL)
+					notifymyandroid(conf->nma_key,get_date().c_str());
 
 				// Try to detect a face
 				if(detect_face(cur))
