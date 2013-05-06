@@ -8,15 +8,17 @@
 #include <sqlite3.h>
 #include <string>
 #include <glib.h>
+#include "hooks/nma.h"
 
 #define MAX_DATE 20 
+#define APP_NAME "RPISurveillance"
 
 using namespace std;
 using namespace cv;
 
 typedef struct
 {
-  gchar *database, *image_directory;
+  gchar *database, *image_directory, *nma_key;
 } Settings;
 
 string get_date();
@@ -38,5 +40,5 @@ bool init_facedetection();
 
 bool detect_face(Mat &frame);
 
-
+bool notifymyandroid(char* api_key,const char* time);
 #endif

@@ -9,3 +9,5 @@ Requirements
 
 * Opencv
 * Sqlite
+* Curl
+* Openssl

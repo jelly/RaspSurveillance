@@ -30,6 +30,7 @@ int main(int argc, char const *argv[])
 	conf = g_slice_new(Settings);
 	conf->database = g_key_file_get_string(keyfile,"options","database",NULL);
 	conf->image_directory = g_key_file_get_string(keyfile,"options","image_directory",NULL);
+	conf->nma_key = g_key_file_get_string(keyfile,"nma","api_key",NULL);
 
 
 	// Open database
@@ -61,6 +62,7 @@ int main(int argc, char const *argv[])
 			if(motion(cur,prev)) {
 				printf("motion detected!\n");
 				fileloc = (string)conf->image_directory + "intruder_" + get_date() + ".jpg"; 
+				notifymyandroid(conf->nma_key,get_date().c_str());
 
 				// Try to detect a face
 				if(detect_face(cur))
