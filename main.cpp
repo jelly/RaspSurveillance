@@ -28,8 +28,8 @@ int main(int argc, char const *argv[])
 	}
 
 	conf = g_slice_new(Settings);
-	conf->database = g_key_file_get_string(keyfile,"config","database",NULL);
-	conf->image_location = g_key_file_get_string(keyfile,"config","image_location",NULL);
+	conf->database = g_key_file_get_string(keyfile,"options","database",NULL);
+	conf->image_location = g_key_file_get_string(keyfile,"options","image_location",NULL);
 
 	clock_t t;
 	Mat prev,cur;
