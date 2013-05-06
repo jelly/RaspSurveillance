@@ -16,7 +16,7 @@ using namespace cv;
 
 typedef struct
 {
-  gchar *database, *image_location;
+  gchar *database, *image_directory;
 } Settings;
 
 string get_date();

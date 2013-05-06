@@ -13,34 +13,40 @@ using namespace cv;
 
 int main(int argc, char const *argv[])
 {
+	// Config file options
 	Settings *conf;
 	GKeyFile *keyfile;
 	GKeyFileFlags flags;
 	GError *error = NULL;
 	gsize length;
 	  
-	/* Create a new GKeyFile object and a bitwise list of flags. */
+	// Create a new GKeyFile object and a bitwise list of flags. 
 	keyfile = g_key_file_new();	
 	if(!g_key_file_load_from_file(keyfile,"rpisecsys.conf",flags,&error)) {
 		printf("Failed to load config file\n");
-		//g_error(error->message);
 		return -1;
 	}
 
 	conf = g_slice_new(Settings);
 	conf->database = g_key_file_get_string(keyfile,"options","database",NULL);
-	conf->image_location = g_key_file_get_string(keyfile,"options","image_location",NULL);
+	conf->image_directory = g_key_file_get_string(keyfile,"options","image_directory",NULL);
 
-	clock_t t;
-	Mat prev,cur;
-//	const char *db_name = "database.db";
+
+	// Open database
 	open_db(conf->database);
 	init_db();
 
+	// OpenCV 
+	clock_t t;
+	Mat prev,cur,original;
 	VideoCapture cap(0); 
-	if(!cap.isOpened())  
+
+	// Setup capturing
+	if(!cap.isOpened()){  
+		printf("Failed to capture from camera\n");
 		return -1;
-	Mat original;
+	}
+
 	cap >> original;
 	cur = original;
     	cvtColor(cur,cur,CV_RGB2GRAY);
@@ -50,10 +56,11 @@ int main(int argc, char const *argv[])
 	while(1) {
 		if(cur.data && prev.data){
 			t = clock();
+
 			// Check if motion exists
 			if(motion(cur,prev)) {
-
-				printf("intruder detected!\n");
+				printf("motion detected!\n");
+				fileloc = (string)conf->image_directory + "intruder_" + get_date() + ".jpg"; 
 
 				// Try to detect a face
 				if(detect_face(cur))
@@ -68,6 +75,8 @@ int main(int argc, char const *argv[])
 			clock_t Start = clock();
 			printf ("%f\n",((float)t)/CLOCKS_PER_SEC);
 		}
+
+		// Copy image to prev, grab a new image
 		cur.copyTo(prev);
 		cap >> cur;
     		cvtColor(cur,cur,CV_RGB2GRAY);
