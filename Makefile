@@ -12,7 +12,7 @@ endif
 
 all: watcher
 
-nma: nma.o
+nma.o:  hooks/nma.c
 	gcc -c -fPIC hooks/nma.c -o nma.o    
 
 watcher: main.cpp  nma.o
