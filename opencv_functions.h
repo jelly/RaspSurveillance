@@ -18,11 +18,12 @@ using namespace cv;
 
 typedef struct
 {
-  gchar *database, *image_directory, *nma_key;
+  gchar *database, *image_directory, *nma_key, *email_to, *email_subject;
 } Settings;
 
 string get_date();
 
+void sendmail(const char *subject,const char *to,const char* filename);
 
 void close_db();
 

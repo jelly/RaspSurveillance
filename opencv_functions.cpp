@@ -8,6 +8,16 @@ time_t seconds;
 
 sqlite3 *db;
 
+void sendmail(const char *subject,const char *to,const char* filename){
+	char *command;
+	const char* message = "Intruder detected\n";
+	asprintf(&command,"/usr/bin/mail -a %s -s '%s' %s",filename,subject,to);
+	FILE *mailer = popen(command,"w");
+	fprintf(mailer,"%s\n",message);
+	pclose(mailer);
+
+}
+
 string get_date() {
 	time_t now;
 	char the_date[MAX_DATE];

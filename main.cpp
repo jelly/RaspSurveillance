@@ -31,7 +31,8 @@ int main(int argc, char const *argv[])
 	conf->database = g_key_file_get_string(keyfile,"options","database",NULL);
 	conf->image_directory = g_key_file_get_string(keyfile,"options","image_directory",NULL);
 	conf->nma_key = g_key_file_get_string(keyfile,"nma","api_key",NULL);
-
+	conf->email_to = g_key_file_get_string(keyfile,"email","to",NULL);
+	conf->email_subject = g_key_file_get_string(keyfile,"email","subject",NULL);
 
 	// Open database
 	open_db(conf->database);
@@ -62,7 +63,11 @@ int main(int argc, char const *argv[])
 			if(motion(cur,prev)) {
 				printf("motion detected!\n");
 				fileloc = (string)conf->image_directory + "intruder_" + get_date() + ".jpg"; 
+				imwrite(fileloc.c_str(),original);	
+
 				if(conf->nma_key != NULL)
+					sendmail(conf->email_subject,conf->email_to,fileloc.c_str());
+				if(conf->email_to != NULL && conf->email_subject != NULL)
 					notifymyandroid(conf->nma_key,get_date().c_str());
 
 				// Try to detect a face
@@ -70,10 +75,9 @@ int main(int argc, char const *argv[])
 					insert_db(fileloc.c_str(),true);
 				else
 					insert_db(fileloc.c_str(),false);
-				imwrite(fileloc.c_str(),original);	
 			}
 			else 
-				cvWaitKey(600);
+				cvWaitKey(700);
 			t = clock() -t;
 			clock_t Start = clock();
 			printf ("%f\n",((float)t)/CLOCKS_PER_SEC);
