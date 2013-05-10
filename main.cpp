@@ -19,10 +19,13 @@ int main(int argc, char const *argv[])
 	GKeyFileFlags flags;
 	GError *error = NULL;
 	gsize length;
-	  
+
+   	string default_path = "/rpisecsys/config";
+	
 	// Create a new GKeyFile object and a bitwise list of flags. 
 	keyfile = g_key_file_new();	
-	if(!g_key_file_load_from_file(keyfile,"rpisecsys.conf",flags,&error)) {
+	if(!g_key_file_load_from_file(keyfile,
+		(g_get_user_config_dir() + default_path).c_str(),flags,&error)) {
 		printf("Failed to load config file\n");
 		return -1;
 	}
