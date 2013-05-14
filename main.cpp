@@ -3,7 +3,6 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include <iostream>
 #include <stdio.h>
-#include <ctime>
 #include "opencv_functions.cpp"
 #include <glib.h>
 
@@ -42,7 +41,6 @@ int main(int argc, char const *argv[])
 	init_db();
 
 	// OpenCV 
-	clock_t t;
 	Mat prev,cur,original;
 	VideoCapture cap(0); 
 
@@ -60,7 +58,6 @@ int main(int argc, char const *argv[])
 
 	while(1) {
 		if(cur.data && prev.data){
-			t = clock();
 
 			// Check if motion exists
 			if(motion(cur,prev)) {
@@ -80,10 +77,7 @@ int main(int argc, char const *argv[])
 					insert_db(fileloc.c_str(),false);
 			}
 			else 
-				cvWaitKey(700);
-			t = clock() -t;
-			clock_t Start = clock();
-			printf ("%f\n",((float)t)/CLOCKS_PER_SEC);
+				cvWaitKey(600);
 		}
 
 		// Copy image to prev, grab a new image
