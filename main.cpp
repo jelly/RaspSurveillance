@@ -50,9 +50,12 @@ int main(int argc, char const *argv[])
 		return -1;
 	}
 
+	// Capture first image 
+	// Original will be the image that is presented to the user
 	cap >> original;
 	cur = original;
     	cvtColor(cur,cur,CV_RGB2GRAY);
+
 	init_facedetection();
 	string fileloc;
 
