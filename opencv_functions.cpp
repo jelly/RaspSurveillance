@@ -135,5 +135,5 @@ bool detect_face(Mat &frame) {
 }
 
 bool notifymyandroid(char* api_key, const char* time) {
-	return nma_push_msg(api_key, 1,"Raspsurveillance", "Motion detected", "Motion detected ") == 200;
+	return nma_push_msg(api_key, 1,"Raspsurveillance", "Intruder detected", "Intruder detected ") == 200;
 }
