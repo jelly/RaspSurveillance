@@ -36,4 +36,4 @@ E-mail requires a setup of a MTA, like esmtp or msmtp-mta.
 
 Usage
 =====
-Just run the `watcher` program.
+Compile the program using make, then just run `watcher`.

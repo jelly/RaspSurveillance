@@ -1,14 +1,5 @@
-ifeq ($(shell uname -m),armv6l)
- $(info Rpi)
- CC=g++
- CFLAGS=-O3  -mfpu=vfp -mfloat-abi=hard
-else
- $(info native build)
- CC=g++
- CFLAGS=-O0 -g  
- #-pedantic 
- #-Werror
-endif
+CC=g++
+CFLAGS=-O3  
 
 all: watcher
 
@@ -21,5 +12,5 @@ watcher: main.cpp  nma.o
 
 
 clean:
-	rm -r  watcher db
+	rm -r  watcher
 
